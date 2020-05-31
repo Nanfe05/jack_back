@@ -1,3 +1,5 @@
+// .env Variables
+require('dotenv').config()
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
@@ -9,7 +11,7 @@ dbConnect();
 // Middleware - Request Body if JSON
 app.use(express.json());
 
-app.use('/jack/auth',require('./Routes/auth'));
+app.use('/jackmarketing/auth',require('./Routes/auth'));
 
 
 // Else if no routes available

@@ -1,5 +1,3 @@
-// .env Variables
-require('dotenv').config()
 const mongoose = require('mongoose');
 
 

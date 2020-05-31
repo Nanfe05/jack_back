@@ -8,6 +8,30 @@ const jwt = require('jsonwebtoken');
 // Model of User from the DataBase
 const User =  require('../Schemas/user');
 
+// Middlewares
+const middlewareJWT = require('../Middleware/jwt');
+
+// POST 
+// Validate User
+// Private - Need Token 
+router.post('/',middlewareJWT,async (req,res)=>{
+    try{
+        const user = await User.findById(req.user);
+        res.status(200).json({
+            user:{
+                name:user.name,
+                lastname:user.lastname
+            },
+            success:[{
+                msg:'Successfully Logged'
+            }]
+        });
+    }catch(err){
+        console.log('Error Validating User: ',err);
+        return res.status(400).json({errors:[{msg:"Error Validating User"}]});
+    }
+    
+});
 
 
 // POST
@@ -26,20 +50,24 @@ router.post('/login',[
     // Check if errors
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-        res.status(422).json({errors:errors.array()});
+        res.status(400).json({errors:errors.array()});
     }
     try{
             // Get User 
             let user = await User.findOne({email:req.body.email});
             // If user don't exists
             if(!user){
-                return res.status(422).json({errors:[{msg:"Credentials are not valid"}]});
+                
+                    return res.status(400).json({errors:[{msg:"Credentials are not valid"}]});
+                
             }
             // If password don't match
             const passMatch =await bcrypt.compare(req.body.pass,user.pass);
             
             if(!passMatch){
-                return res.status(422).json({errors:[{msg:"Credentials are not valid"}]});
+                
+                    return res.status(400).json({errors:[{msg:"Credentials are not valid"}]});
+                
             }
 
             const token =  jwt.sign({user:{id:user.id}},process.env.SECRETKEY,{
@@ -47,7 +75,14 @@ router.post('/login',[
             })
             
             // Return JSON WEB TOKEN TO SIGN
-            res.status(200).json({token});
+            
+                res.status(200).json({
+                    token,
+                    success:[{
+                        msg:'Successfully Logged'
+                    }]
+                });
+            
         
 
     }catch(err){
@@ -80,13 +115,17 @@ router.post('/signin',[
     // Check if errors
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-      return  res.status(422).json({errors:errors.array()});
+        
+            return  res.status(400).json({errors:errors.array()});
+      
     }
     // Check if email DO NOT exists
     let user = await User.findOne({email:req.body.email});
     // If email already registered send error
     if(user){
-        return res.status(422).json({errors:[{msg:"Email already registered"}]});
+        
+            return res.status(400).json({errors:[{msg:"Email already registered"}]});
+       
     }
     try{
         // Hash Password
@@ -107,12 +146,21 @@ router.post('/signin',[
         })
         
         // Return JSON WEB TOKEN TO SIGN
-        res.status(200).send(token);
+        
+            res.status(200).send({
+                token,
+                success:[{
+                    msg:'Successfully Signed'
+                }]
+            });
+       
 
 
     }catch(err){
         console.log('Error Saving User: ', err);
-        res.status(500).send('Server Error, Please Contact Customer Support');
+        
+            res.status(500).send('Server Error, Please Contact Customer Support');
+       
     }
 
    
