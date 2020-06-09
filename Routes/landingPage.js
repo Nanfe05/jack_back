@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 // Model of LandingPage
-
+const User = require('../Schemas/user');
+const LandingPage = require('../Schemas/landingPage');
 
 // Middlewares
 const middlewareJWT = require('../Middleware/jwt');
@@ -12,9 +13,24 @@ const middlewareJWT = require('../Middleware/jwt');
 // Private - Token Needed
 router.post('/',middlewareJWT,async (req,res)=>{
     try{
-        // const user = await User.findById(req.user);
+        // Look for user to get email and id 
+        const user = await User.findById(req.user);
+        // // Search by USER ID - if a lp with save lp_id exists to choose if create or update one 
+        // const landingPage = await LandingPage.findById(req.user);
+        let landingPage;
+        // Update a Landing Page
         
-        console.log(req.body);
+        // Create a Landing Page
+        landingPage = new LandingPage({
+            name:req.body.payload.lp_name,
+            userid:user._id,
+            useremail:user.email,
+            content:req.body.payload,
+        });
+
+
+        let saveFile = await landingPage.save();
+        console.log('SAVE: ',saveFile);
         res.status(200).json({
             success:[{
                 msg:'Landing Page Saved'
