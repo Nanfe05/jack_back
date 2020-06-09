@@ -13,6 +13,7 @@ app.use(express.json());
 
 app.use('/jackmarketing/auth',require('./Routes/auth'));
 
+app.use('/jackmarketing/landingpage',require('./Routes/landingPage'));
 
 // Else if no routes available
 app.get('*',(req,res)=>{
