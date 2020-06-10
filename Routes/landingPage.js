@@ -8,6 +8,31 @@ const LandingPage = require('../Schemas/landingPage');
 // Middlewares
 const middlewareJWT = require('../Middleware/jwt');
 
+// GET
+// SEND AVAILABLE LANDING PAGES
+// Private - Token Needed
+router.post('/getall',middlewareJWT,async (req,res)=>{
+    try{
+    const lp_private = await LandingPage.find({userid:req.user}).select('name category _id');   
+    const lp_public = await LandingPage.find({accessibility:'public'}).select('name category _id');
+    
+    res.status(200).json({
+        lp_private,
+        lp_public,
+        success:[{
+            msg:'Landing Pages Loaded'
+        }]
+    });
+        
+    }catch(err){
+        console.log('Error Getting Landing Pages: ',err);
+        return res.status(400).json({errors:[{msg:"Error Getting Landing Pages"}]});
+    }
+    
+    
+});
+
+
 // POST 
 // Save Landing Page
 // Private - Token Needed
@@ -29,8 +54,8 @@ router.post('/',middlewareJWT,async (req,res)=>{
         });
 
 
-        let saveFile = await landingPage.save();
-        console.log('SAVE: ',saveFile);
+        await landingPage.save();
+        
         res.status(200).json({
             success:[{
                 msg:'Landing Page Saved'

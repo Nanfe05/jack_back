@@ -12,6 +12,16 @@ const landingPageSchema = new Schema({
         type:String,
         required: true
     },
+    // Public || Private
+    accessibility:{
+        type:String,
+        default:'private'
+    },
+    // 
+    category:{
+        type:String,
+        default:'Other'
+    },
     content:{
         type:Object,
         required:true

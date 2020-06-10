@@ -2,6 +2,8 @@ const jwt = require('jsonwebtoken');
 
 function TokenMiddleware (req,res,next){
     try{
+        // console.log('REQ BODY: ',req.body);
+        // console.log('REQ HEADERS: ',req.headers);
         const token = req.body.token;
         const validToken = jwt.verify(token,process.env.SECRETKEY);
         req.user = validToken.user.id;
