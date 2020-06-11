@@ -103,7 +103,7 @@ router.post('/',middlewareJWT,async (req,res)=>{
                 landingPage.content=req.body.payload;
 
                 await landingPage.save();
-                console.log('Updated');
+                // console.log('Updated');
                 return res.status(200).json({
                     success:[{
                         msg:'Landing Page Saved!'
@@ -126,7 +126,7 @@ router.post('/',middlewareJWT,async (req,res)=>{
         });
         await landingPage.save();
         
-        console.log('First Save');
+        // console.log('First Save');
         return res.status(200).json({
             id:landingPage._id,
             success:[{
